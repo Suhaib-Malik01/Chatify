@@ -1,7 +1,8 @@
-import { Button, Heading, Text, VStack } from "@chakra-ui/react";
+import { Heading, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 
 import { loginHandler } from "../App";
+import GoogleButton from "./GoogleButton";
 
 
 const Home = () => {
@@ -13,16 +14,11 @@ const Home = () => {
       <Text fontSize="2xl" fontWeight="medium" textAlign={"center"}>
         Sign-Up And Chat
       </Text>
-      <Text fontSize="xl" padding={"4"} textAlign={"center"}>
-        Join the community and start chatting with your friends and loved ones.
+      <Text fontSize="xl" paddingX={"4"} paddingY={"2"} textAlign={"center"}>
+        Join the community and start chatting with Peoples.
         Send messages
       </Text>
-      <Text fontSize="lg" fontWeight="bold">
-        Get started now!
-      </Text>
-      <Button onClick={loginHandler} colorScheme="blue">
-        Sign in With Google
-      </Button>
+      <GoogleButton onClick={loginHandler} ></GoogleButton>
     </VStack>
   );
 };
