@@ -11,7 +11,7 @@ import {
 
 import Message from "./Components/Message";
 import { app } from "./Firebase";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   onAuthStateChanged,
@@ -47,17 +47,20 @@ const logoutHandler = () => signOut(auth);
 
 function App() {
 
-  const dataQuery = query(collection(db,"Messages"),orderBy("createdAt","asc"));
+  
   const [user, setUser] = useState(false);
 
   const [message, setMessage] = useState("");
 
   const [messages, setMessages] = useState([]);
 
+  const viewMessage = useRef(null);
+
   const formSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
+      setMessage("");
       await addDoc(collection(db, "Messages"), {
         text: message,
         uid: user.uid,
@@ -65,13 +68,15 @@ function App() {
         createdAt: serverTimestamp(),
       });
 
-      setMessage("");
+      viewMessage.current.scrollIntoView({behavior: "smooth"})
+
     } catch (err) {
       alert(err);
     }
   };
 
   useEffect(() => {
+    const dataQuery = query(collection(db,"Messages"),orderBy("createdAt","asc"));
     const unSubscribe = onAuthStateChanged(auth, (data) => {
       setUser(data);
     });
@@ -104,7 +109,9 @@ function App() {
               Logout
             </Button>
 
-            <VStack h={"full"} w={"full"} overflowY={"auto"}>
+            <VStack h={"full"} w={"full"} overflowY={"auto"} css={{"&::-webkit-scrollbar": {
+              display:"none"
+            }}}>
               {messages.map((ele) => (
                 <Message
                   key={ele.id}
@@ -113,7 +120,10 @@ function App() {
                   user={ele.uid == user.uid ? "me" : "other"}
                 />
               ))}
+
+              <div ref={viewMessage}></div>
             </VStack>
+
             <form style={{ width: "100%" }}>
               <HStack>
                 <Input
