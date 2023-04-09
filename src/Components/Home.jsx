@@ -1,8 +1,8 @@
-import { Heading, Text, VStack } from "@chakra-ui/react";
+import { Button, Heading, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 
 import { loginHandler } from "../App";
-import GoogleButton from "./GoogleButton";
+import GoogleButton from "./Button";
 
 
 const Home = () => {
@@ -18,7 +18,7 @@ const Home = () => {
         Join the community and start chatting with Peoples.
         Send messages
       </Text>
-      <GoogleButton onClick={loginHandler} ></GoogleButton>
+      <GoogleButton  onClick={loginHandler} ></GoogleButton>
     </VStack>
   );
 };
