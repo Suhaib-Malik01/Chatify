@@ -107,7 +107,7 @@ function App() {
               <Text fontSize={"2xl"} >
               Greetings, {user.displayName.split(" ")[0]}
               </Text>
-              <Button colorScheme="red">Logout</Button>
+              <Button colorScheme="red" onClick={logoutHandler}>Logout</Button>
             </HStack>
 
             <VStack
