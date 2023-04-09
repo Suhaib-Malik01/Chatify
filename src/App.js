@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   Input,
+  Spacer,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -28,12 +29,10 @@ import {
   serverTimestamp,
   onSnapshot,
   orderBy,
-  query
-  
+  query,
 } from "firebase/firestore";
 import Home from "./Components/Home";
-
-
+import { AiOutlineSend } from "react-icons/ai";
 
 const auth = getAuth(app);
 
@@ -48,8 +47,6 @@ const loginHandler = () => {
 const logoutHandler = () => signOut(auth);
 
 function App() {
-
-  
   const [user, setUser] = useState(false);
 
   const [message, setMessage] = useState("");
@@ -60,7 +57,7 @@ function App() {
 
   const formSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setMessage("");
       await addDoc(collection(db, "Messages"), {
@@ -70,50 +67,59 @@ function App() {
         createdAt: serverTimestamp(),
       });
 
-      viewMessage.current.scrollIntoView({behavior: "smooth"})
-
+      viewMessage.current.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
       alert(err);
     }
   };
 
   useEffect(() => {
-    const dataQuery = query(collection(db,"Messages"),orderBy("createdAt","asc"));
+    const dataQuery = query(
+      collection(db, "Messages"),
+      orderBy("createdAt", "asc")
+    );
     const unSubscribe = onAuthStateChanged(auth, (data) => {
       setUser(data);
     });
 
     const unSubscribeForMessage = onSnapshot(dataQuery, (snap) => {
-      
-        setMessages(snap.docs.map((ele) => {
+      setMessages(
+        snap.docs.map((ele) => {
           const id = ele.id;
-          return {id, ...ele.data()};
-        }))
-      
+          return { id, ...ele.data() };
+        })
+      );
     });
 
     return () => {
-      unSubscribe()
-      unSubscribeForMessage()
+      unSubscribe();
+      unSubscribeForMessage();
     };
-  },[]);
+  }, []);
 
   return (
     <Box bg={"red.50"}>
       {user ? (
         <Container h={"100vh"} bg="white">
           <VStack h={"full"} padding={"4"}>
-            <Button
-              onClick={() => logoutHandler()}
-              w={"full"}
-              colorScheme="red"
-            >
-              Logout
-            </Button>
 
-            <VStack h={"full"} w={"full"} overflowY={"auto"} css={{"&::-webkit-scrollbar": {
-              display:"none"
-            }}}>
+            <HStack justifyContent={"space-between"} w={"full"}>
+              <Text fontSize={"2xl"} >
+              Greetings, {user.displayName.split(" ")[0]}
+              </Text>
+              <Button colorScheme="red">Logout</Button>
+            </HStack>
+
+            <VStack
+              h={"full"}
+              w={"full"}
+              overflowY={"auto"}
+              css={{
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
+            >
               {messages.map((ele) => (
                 <Message
                   key={ele.id}
@@ -139,7 +145,7 @@ function App() {
                   colorScheme={"green"}
                   type="Submit"
                 >
-                  Send
+                  <AiOutlineSend />
                 </Button>
               </HStack>
             </form>
